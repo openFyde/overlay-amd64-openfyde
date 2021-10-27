@@ -1,0 +1,1 @@
+amd64-fydeos-spec-0.0.1.ebuild

@@ -1,0 +1,1 @@
+fydeos-board-spec-0.0.1.ebuild

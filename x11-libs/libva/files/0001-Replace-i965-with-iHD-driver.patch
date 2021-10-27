@@ -1,0 +1,26 @@
+From 90917058c4164d8e2fb18ad95a0bf8913818decd Mon Sep 17 00:00:00 2001
+From: Azhar Shaikh <azhar.shaikh@intel.com>
+Date: Wed, 31 Oct 2018 11:47:47 -0700
+Subject: [PATCH] Replace i965 with iHD driver
+
+Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+---
+ va/drm/va_drm_utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/va/drm/va_drm_utils.c b/va/drm/va_drm_utils.c
+index 9510dd9c7805..fe4297242aa7 100644
+--- a/va/drm/va_drm_utils.c
++++ b/va/drm/va_drm_utils.c
+@@ -37,7 +37,7 @@ struct driver_name_map {
+ };
+ 
+ static const struct driver_name_map g_driver_name_map[] = {
+-    { "i915",       4, "i965"   }, // Intel OTC GenX driver
++    { "i915",       4, "iHD"   }, // Intel OTC GenX driver
+     { "pvrsrvkm",   8, "pvr"    }, // Intel UMG PVR driver
+     { "emgd",       4, "emgd"   }, // Intel ECG PVR driver
+     { "hybrid",     6, "hybrid" }, // Intel OTC Hybrid driver
+-- 
+2.19.0
+

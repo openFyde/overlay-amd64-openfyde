@@ -1,0 +1,20 @@
+chromeos-base/chromeos-chrome  chrome_media build_tests autotest -chrome_debug tpm_fallback
+#chromeos-base/libchromeos-use-flags native_gpu_memory_buffers drm_atomic
+media-libs/mesa egl gles2 shared-glapi llvm
+media-libs/arc-mesa abi_x86_32 shared-glapi llvm egl gles1 gles2 shared-glapi gallium
+x11-libs/arc-libdrm abi_x86_32 -libkms 
+media-libs/arc-cros-gralloc abi_x86_32 video_cards_amdgpu
+dev-libs/arc-libelf abi_x86_32
+sys-devel/arc-llvm abi_x86_32
+sys-devel/arc-build abi_x86_32 
+chromeos-base/chromeos-fonts -internal
+>=sys-apps/gptfdisk-1.0.1 -ncurses
+sys-kernel/chromeos-kernel-4_14 -clang -lld apply_patches
+sys-kernel/chromeos-kernel-4_19 clang apply_patches
+sys-kernel/chromeos-kernel-5_4 clang apply_patches lld llvm llvm_ias
+>=sys-kernel/chromeos-kernel-5_4-9999 -apply_patches lld llvm llvm_ias
+sys-kernel/chromeos-kernel-5_10 apply_patches clang lld
+sys-kernel/linux-firmware savedconfig
+x11-libs/libva intel_ihd_pavp
+#virtual/lpe-support skl_lpe apl_lpe kbl_lpe cnl_lpe glk_lpe
+sys-libs/ncurses unicode

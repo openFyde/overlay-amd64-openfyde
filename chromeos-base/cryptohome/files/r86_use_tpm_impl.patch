@@ -1,0 +1,13 @@
+diff --git a/cryptohome/tpm.cc b/cryptohome/tpm.cc
+index 019452203..e9a10b445 100644
+--- a/cryptohome/tpm.cc
++++ b/cryptohome/tpm.cc
+@@ -85,7 +85,7 @@ Tpm* Tpm::GetSingleton() {
+ #if USE_TPM2
+     singleton_ = new Tpm2Impl();
+ #else
+-    singleton_ = new TpmNewImpl();
++    singleton_ = new TpmImpl();
+ #endif
+   }
+   singleton_lock_.Release();
