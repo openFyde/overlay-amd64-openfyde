@@ -1,3 +1,6 @@
+# Copyright (c) 2021, Fyde Innovations Limited. All rights reserved.
+# Distributed under the license specified in the root directory of this project.
+
 # Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
