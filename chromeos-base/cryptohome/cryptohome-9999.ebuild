@@ -1,6 +1,3 @@
-# Copyright (c) 2021, Fyde Innovations Limited. All rights reserved.
-# Distributed under the license specified in the root directory of this project.
-
 # Copyright 2014 The Chromium OS Authors. All rights reserved.
 # Distributed under the terms of the GNU General Public License v2
 
@@ -11,12 +8,12 @@ CROS_WORKON_PROJECT="chromiumos/platform2"
 CROS_WORKON_DESTDIR="${S}/platform2"
 CROS_WORKON_INCREMENTAL_BUILD=1
 # TODO(crbug.com/809389): Avoid directly including headers from other packages.
-CROS_WORKON_SUBTREE="common-mk cryptohome libhwsec secure_erase_file .gn"
+CROS_WORKON_SUBTREE="common-mk cryptohome libhwsec libhwsec-foundation secure_erase_file .gn"
 
 PLATFORM_NATIVE_TEST="yes"
 PLATFORM_SUBDIR="cryptohome"
 
-inherit cros-workon platform systemd udev user
+inherit tmpfiles cros-workon cros-unibuild platform systemd udev user
 
 DESCRIPTION="Encrypted home directories for Chromium OS"
 HOMEPAGE="https://chromium.googlesource.com/chromiumos/platform2/+/master/cryptohome/"
@@ -27,14 +24,15 @@ SLOT="0/0"
 KEYWORDS="~*"
 IUSE="-cert_provision +device_mapper -direncription_allow_v2 -direncryption
 	double_extend_pcr_issue +downloads_bind_mount fuzzer
-	generated_cros_config generic_tpm2 kernel-5_10 kernel-5_4 kernel-upstream
+	generic_tpm2 kernel-5_10 kernel-5_4 kernel-upstream
 	lvm_stateful_partition mount_oop pinweaver selinux slow_mount systemd
-	test tpm tpm2 tpm2_simulator unibuild uprev-4-to-5
+	test tpm tpm_dynamic tpm2 tpm2_simulator uprev-4-to-5
 	user_session_isolation +vault_legacy_mount vtpm_proxy"
 
 REQUIRED_USE="
 	device_mapper
-	tpm2? ( !tpm )
+	tpm_dynamic? ( tpm tpm2 )
+	!tpm_dynamic? ( ?? ( tpm tpm2 ) )
 "
 
 COMMON_DEPEND="
@@ -61,8 +59,7 @@ COMMON_DEPEND="
 	>=chromeos-base/metrics-0.0.1-r3152:=
 	chromeos-base/secure-erase-file:=
 	chromeos-base/tpm_manager:=
-	dev-libs/dbus-glib:=
-	dev-libs/glib:=
+	dev-libs/flatbuffers:=
 	dev-libs/openssl:=
 	dev-libs/protobuf:=
 	sys-apps/flashmap:=
@@ -71,10 +68,6 @@ COMMON_DEPEND="
 	sys-fs/e2fsprogs:=
 	sys-fs/ecryptfs-utils:=
 	sys-fs/lvm2:=
-	unibuild? (
-		!generated_cros_config? ( chromeos-base/chromeos-config )
-		generated_cros_config? ( chromeos-base/chromeos-config-bsp:= )
-	)
 "
 
 RDEPEND="${COMMON_DEPEND}"
@@ -146,6 +139,8 @@ src_install() {
 		doins init/send-mount-encrypted-metrics.conf
 		if use tpm2_simulator && ! use vtpm_proxy; then
 			newins init/lockbox-cache.conf.tpm2_simulator lockbox-cache.conf
+		elif use tpm_dynamic; then
+			newins init/lockbox-cache.conf.tpm_dynamic lockbox-cache.conf
 		else
 			doins init/lockbox-cache.conf
 		fi
@@ -184,6 +179,8 @@ src_install() {
 	exeinto /usr/share/cros/init
 	if use tpm2_simulator && ! use vtpm_proxy; then
 		newexe init/lockbox-cache.sh.tpm2_simulator lockbox-cache.sh
+	elif use tpm_dynamic; then
+		newexe init/lockbox-cache.sh.tpm_dynamic lockbox-cache.sh
 	else
 		doexe init/lockbox-cache.sh
 	fi
@@ -196,16 +193,26 @@ src_install() {
 	insinto /usr/share/policy
 	newins "seccomp/cryptohome-proxy-${ARCH}.policy" cryptohome-proxy.policy
 
+	dotmpfiles tmpfiles.d/cryptohome.conf
+
+	local fuzzer_component_id="886041"
 	platform_fuzzer_install "${S}"/OWNERS \
 		"${OUT}"/cryptohome_cryptolib_rsa_oaep_decrypt_fuzzer \
+		--comp "${fuzzer_component_id}" \
 		fuzzers/data/*
 
 	platform_fuzzer_install "${S}"/OWNERS \
-		"${OUT}"/cryptohome_cryptolib_blob_to_hex_fuzzer
+		"${OUT}"/cryptohome_cryptolib_blob_to_hex_fuzzer \
+		--comp "${fuzzer_component_id}"
 
 	platform_fuzzer_install "${S}"/OWNERS \
 		"${OUT}"/cryptohome_tpm1_cmk_migration_parser_fuzzer \
+		--comp "${fuzzer_component_id}" \
 		fuzzers/data/*
+
+	platform_fuzzer_install "${S}"/OWNERS \
+		"${OUT}"/cryptohome_user_secret_stash_parser_fuzzer \
+		--comp "${fuzzer_component_id}"
 }
 
 pkg_preinst() {

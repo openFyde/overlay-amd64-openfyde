@@ -6,19 +6,19 @@
 
 EAPI=7
 
-CROS_WORKON_COMMIT="086ba989ee1f479f54d06fcd125ff4772a75f8a0"
-CROS_WORKON_TREE=("17e0c199bc647ae6a33554fd9047fa23ff9bfd7e" "7b6c6283792d1c2c91b8084f76ca44eaa0b9515e" "c200c725a537163b64b27b630cb1b67320f627a6" "1a305e65cfaf27dd42734a37eda080d40b377d6c" "e7dba8c91c1f3257c34d4a7ffff0ea2537aeb6bb")
+CROS_WORKON_COMMIT="9560b19a804e464732fb45d93188aec8db7262d9"
+CROS_WORKON_TREE=("d897a7a44e07236268904e1df7f983871c1e1258" "7b3e67d04dbf218f9f05368703438e33c3486fd0" "2bd42cf4f2f41e68c177dfdba095d8d3412fd76c" "1e9ca239fab09ba22b58e4a22d63e2ede865b159" "1a305e65cfaf27dd42734a37eda080d40b377d6c" "e7dba8c91c1f3257c34d4a7ffff0ea2537aeb6bb")
 CROS_WORKON_LOCALNAME="platform2"
 CROS_WORKON_PROJECT="chromiumos/platform2"
 CROS_WORKON_DESTDIR="${S}/platform2"
 CROS_WORKON_INCREMENTAL_BUILD=1
 # TODO(crbug.com/809389): Avoid directly including headers from other packages.
-CROS_WORKON_SUBTREE="common-mk cryptohome libhwsec secure_erase_file .gn"
+CROS_WORKON_SUBTREE="common-mk cryptohome libhwsec libhwsec-foundation secure_erase_file .gn"
 
 PLATFORM_NATIVE_TEST="yes"
 PLATFORM_SUBDIR="cryptohome"
 
-inherit cros-workon platform systemd udev user
+inherit tmpfiles cros-workon cros-unibuild platform systemd udev user
 
 DESCRIPTION="Encrypted home directories for Chromium OS"
 HOMEPAGE="https://chromium.googlesource.com/chromiumos/platform2/+/master/cryptohome/"
@@ -29,14 +29,15 @@ SLOT="0/0"
 KEYWORDS="*"
 IUSE="-cert_provision +device_mapper -direncription_allow_v2 -direncryption
 	double_extend_pcr_issue +downloads_bind_mount fuzzer
-	generated_cros_config generic_tpm2 kernel-5_10 kernel-5_4 kernel-upstream
+	generic_tpm2 kernel-5_10 kernel-5_4 kernel-upstream
 	lvm_stateful_partition mount_oop pinweaver selinux slow_mount systemd
-	test tpm tpm2 tpm2_simulator unibuild uprev-4-to-5
+	test tpm tpm_dynamic tpm2 tpm2_simulator uprev-4-to-5
 	user_session_isolation +vault_legacy_mount vtpm_proxy"
 
 REQUIRED_USE="
 	device_mapper
-	tpm2? ( !tpm )
+	tpm_dynamic? ( tpm tpm2 )
+	!tpm_dynamic? ( ?? ( tpm tpm2 ) )
 "
 
 COMMON_DEPEND="
@@ -63,8 +64,7 @@ COMMON_DEPEND="
 	>=chromeos-base/metrics-0.0.1-r3152:=
 	chromeos-base/secure-erase-file:=
 	chromeos-base/tpm_manager:=
-	dev-libs/dbus-glib:=
-	dev-libs/glib:=
+	dev-libs/flatbuffers:=
 	dev-libs/openssl:=
 	dev-libs/protobuf:=
 	sys-apps/flashmap:=
@@ -73,10 +73,6 @@ COMMON_DEPEND="
 	sys-fs/e2fsprogs:=
 	sys-fs/ecryptfs-utils:=
 	sys-fs/lvm2:=
-	unibuild? (
-		!generated_cros_config? ( chromeos-base/chromeos-config )
-		generated_cros_config? ( chromeos-base/chromeos-config-bsp:= )
-	)
 "
 
 RDEPEND="${COMMON_DEPEND}"
@@ -148,6 +144,8 @@ src_install() {
 		doins init/send-mount-encrypted-metrics.conf
 		if use tpm2_simulator && ! use vtpm_proxy; then
 			newins init/lockbox-cache.conf.tpm2_simulator lockbox-cache.conf
+		elif use tpm_dynamic; then
+			newins init/lockbox-cache.conf.tpm_dynamic lockbox-cache.conf
 		else
 			doins init/lockbox-cache.conf
 		fi
@@ -186,6 +184,8 @@ src_install() {
 	exeinto /usr/share/cros/init
 	if use tpm2_simulator && ! use vtpm_proxy; then
 		newexe init/lockbox-cache.sh.tpm2_simulator lockbox-cache.sh
+	elif use tpm_dynamic; then
+		newexe init/lockbox-cache.sh.tpm_dynamic lockbox-cache.sh
 	else
 		doexe init/lockbox-cache.sh
 	fi
@@ -198,16 +198,26 @@ src_install() {
 	insinto /usr/share/policy
 	newins "seccomp/cryptohome-proxy-${ARCH}.policy" cryptohome-proxy.policy
 
+	dotmpfiles tmpfiles.d/cryptohome.conf
+
+	local fuzzer_component_id="886041"
 	platform_fuzzer_install "${S}"/OWNERS \
 		"${OUT}"/cryptohome_cryptolib_rsa_oaep_decrypt_fuzzer \
+		--comp "${fuzzer_component_id}" \
 		fuzzers/data/*
 
 	platform_fuzzer_install "${S}"/OWNERS \
-		"${OUT}"/cryptohome_cryptolib_blob_to_hex_fuzzer
+		"${OUT}"/cryptohome_cryptolib_blob_to_hex_fuzzer \
+		--comp "${fuzzer_component_id}"
 
 	platform_fuzzer_install "${S}"/OWNERS \
 		"${OUT}"/cryptohome_tpm1_cmk_migration_parser_fuzzer \
+		--comp "${fuzzer_component_id}" \
 		fuzzers/data/*
+
+	platform_fuzzer_install "${S}"/OWNERS \
+		"${OUT}"/cryptohome_user_secret_stash_parser_fuzzer \
+		--comp "${fuzzer_component_id}"
 }
 
 pkg_preinst() {
@@ -226,6 +236,6 @@ platform_pkg_test() {
 }
 
 src_prepare() {
-  eapply -p2 ${FILESDIR}/r92_cryptohome_encryption_key.patch
+  eapply -p2 ${FILESDIR}/cryptohome_encryption_key.patch
   default
 }
