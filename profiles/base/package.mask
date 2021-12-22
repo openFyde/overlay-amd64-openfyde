@@ -1,4 +1,3 @@
 sys-kernel/chromeos-kernel-4_14::chromiumos
-chromeos-base/cryptohome::chromiumos
 chromeos-base/cryptohome::patches
 media-libs/lpe-support-blacklist::chromiumos
