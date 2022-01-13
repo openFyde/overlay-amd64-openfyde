@@ -21,6 +21,4 @@ S="${WORKDIR}"
 
 src_install() {
   doappid "{6B1266C6-CC06-4EF1-B648-9A0799301D78}" "CHROMEBOOK" "{30D63171-10F9-41AA-9858-2F9913A75C9B}"
-  insinto "/usr/share/power_manager/board_specific"
-  doins ${FILESDIR}/powerd/*
 }

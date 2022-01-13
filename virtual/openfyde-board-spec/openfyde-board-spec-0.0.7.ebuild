@@ -14,7 +14,7 @@ IUSE="kernel-5_10"
 RDEPEND="
     chromeos-base/auto-expand-partition
 	chromeos-base/apple-touchpad-bcm5974
-    chromeos-base/amd64-fydeos-spec
+    chromeos-base/amd64-openfyde-spec
     sys-firmware/mssl1680-firmware
     sys-apps/haveged
     chromeos-base/fydeos-gestures-config
