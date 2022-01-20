@@ -25,7 +25,6 @@ RDEPEND="
     chromeos-base/fydeos-input-util
     !kernel-5_10? (
       net-wireless/rtl8821ce-driver
-      net-wireless/broadcom-sta
     )
     chromeos-base/vga-switcher
     virtual/gentoo-extra-pkgs
