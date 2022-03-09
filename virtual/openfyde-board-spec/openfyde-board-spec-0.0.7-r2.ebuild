@@ -27,6 +27,7 @@ RDEPEND="
       net-wireless/rtl8821ce-driver
     )
     chromeos-base/vga-switcher
+    sys-firmware/b43-firmware
     virtual/gentoo-extra-pkgs
 "
 
