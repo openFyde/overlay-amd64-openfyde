@@ -1,4 +1,4 @@
-chromeos-base/chromeos-chrome  chrome_media build_tests autotest -chrome_debug tpm_fallback
+chromeos-base/chromeos-chrome chrome_media -build_tests -autotest -chrome_debug tpm_fallback
 #chromeos-base/libchromeos-use-flags native_gpu_memory_buffers drm_atomic
 media-libs/mesa egl gles2 shared-glapi llvm
 media-libs/arc-mesa abi_x86_32 shared-glapi llvm egl gles1 gles2 shared-glapi gallium
