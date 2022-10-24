@@ -1,0 +1,35 @@
+diff --git a/vm_tools/concierge/service.cc b/vm_tools/concierge/service.cc
+index be3bd5004f..69bce1e2f9 100644
+--- a/vm_tools/concierge/service.cc
++++ b/vm_tools/concierge/service.cc
+@@ -1547,18 +1547,18 @@ StartVmResponse Service::StartVm(StartVmRequest request,
+   if (is_untrusted_vm) {
+     const auto untrusted_vm_check_result =
+         IsUntrustedVMAllowed(request.run_as_untrusted(), host_kernel_version_);
+-    if (!untrusted_vm_check_result.untrusted_vm_allowed) {
+-      std::stringstream ss;
+-      ss << "Untrusted VMs are not allowed: "
+-         << "the host kernel version (" << host_kernel_version_.first << "."
+-         << host_kernel_version_.second << ") must be newer than or equal to "
+-         << kMinKernelVersionForUntrustedAndNestedVM.first << "."
+-         << kMinKernelVersionForUntrustedAndNestedVM.second
+-         << ", or the device must be in the developer mode";
+-      LOG(ERROR) << ss.str();
+-      response.set_failure_reason(ss.str());
+-      return response;
+-    }
++    // if (!untrusted_vm_check_result.untrusted_vm_allowed) {
++    //   std::stringstream ss;
++    //   ss << "Untrusted VMs are not allowed: "
++    //      << "the host kernel version (" << host_kernel_version_.first << "."
++    //      << host_kernel_version_.second << ") must be newer than or equal to "
++    //      << kMinKernelVersionForUntrustedAndNestedVM.first << "."
++    //      << kMinKernelVersionForUntrustedAndNestedVM.second
++    //      << ", or the device must be in the developer mode";
++    //   LOG(ERROR) << ss.str();
++    //   response.set_failure_reason(ss.str());
++    //   return response;
++    // }
+ 
+     // For untrusted VMs -
+     // Check if l1tf and mds mitigations are present on the host. Skip the

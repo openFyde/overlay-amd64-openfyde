@@ -1,0 +1,14 @@
+diff --git a/vm_tools/concierge/vm_builder.cc b/vm_tools/concierge/vm_builder.cc
+index 44be060c26..7f6b2541a4 100644
+--- a/vm_tools/concierge/vm_builder.cc
++++ b/vm_tools/concierge/vm_builder.cc
+@@ -338,7 +338,8 @@ base::StringPairs VmBuilder::BuildVmArgs() const {
+       }
+       // TODO(davidriley): Re-add rootflags=dax once guest kernel has fix for
+       // b/169339326.
+-      args.emplace_back("--params", "root=/dev/pmem0 ro");
++      // args.emplace_back("--params", "root=/dev/pmem0 ro");
++      args.emplace_back("--params", "root=/dev/pmem0");
+     } else {
+       if (rootfs.writable) {
+         args.emplace_back("--rwroot", rootfs.path.value());
