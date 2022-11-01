@@ -1,0 +1,42 @@
+diff --git a/vm_tools/concierge/service.cc b/vm_tools/concierge/service.cc
+index be3bd5004f..8fdfdba92d 100644
+--- a/vm_tools/concierge/service.cc
++++ b/vm_tools/concierge/service.cc
+@@ -584,8 +584,8 @@ bool IsUntrustedVM(bool run_as_untrusted,
+   // Nested virtualization is enabled for all kernels >=
+   // |kMinKernelVersionForUntrustedAndNestedVM|. This means that even with a
+   // trusted image the VM started will essentially be untrusted.
+-  if (host_kernel_version >= kMinKernelVersionForUntrustedAndNestedVM)
+-    return true;
++  // if (host_kernel_version >= kMinKernelVersionForUntrustedAndNestedVM)
++  //   return true;
+ 
+   // Any untrusted image definitely results in an unstrusted VM.
+   if (!is_trusted_image)
+@@ -1555,9 +1555,9 @@ StartVmResponse Service::StartVm(StartVmRequest request,
+          << kMinKernelVersionForUntrustedAndNestedVM.first << "."
+          << kMinKernelVersionForUntrustedAndNestedVM.second
+          << ", or the device must be in the developer mode";
+-      LOG(ERROR) << ss.str();
+-      response.set_failure_reason(ss.str());
+-      return response;
++      LOG(WARNING) << ss.str();
++      // response.set_failure_reason(ss.str());
++      // return response;
+     }
+ 
+     // For untrusted VMs -
+@@ -1569,9 +1569,10 @@ StartVmResponse Service::StartVm(StartVmRequest request,
+         // If the host kernel version isn't supported or the host doesn't have
+         // l1tf and mds mitigations then fail to start an untrusted VM.
+         case UntrustedVMUtils::MitigationStatus::VULNERABLE: {
+-          LOG(ERROR) << "Host vulnerable against untrusted VM";
+-          response.set_failure_reason("Host vulnerable against untrusted VM");
+-          return response;
++          LOG(WARNING) << "Host vulnerable against untrusted VM";
++          break;
++          // response.set_failure_reason("Host vulnerable against untrusted VM");
++          // return response;
+         }
+ 
+         // At this point SMT should not be a security issue. As
