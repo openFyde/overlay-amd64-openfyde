@@ -5,13 +5,13 @@
     "common":[
       {
         "num": 5,
-        "size":"3724 MiB"
+        "size": "2724 MiB"
       },
       {
         "num": 3,
         # caculate: size = fs_size / 64  + 200 (M)
-        "fs_size":"3484 MiB",
-        "size":"3724 MiB"
+        "fs_size":"2484 MiB",
+        "size":"2724 MiB"
       }
     ],
     "usb":[
@@ -23,8 +23,8 @@
       },
       {
         "num": 3,
-        "fs_size":"3484 MiB",
-        "size": "3724 MiB"
+        "fs_size":"2700 MiB",
+        "size": "2724 MiB"
       }
     ],
     "factory_install": [
