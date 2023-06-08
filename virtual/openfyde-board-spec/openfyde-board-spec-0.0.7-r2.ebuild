@@ -20,7 +20,6 @@ RDEPEND="
     chromeos-base/fydeos-gestures-config
     media-libs/lpe-support-topology
     chromeos-base/intel-lpe-audio-config
-    virtual/fydemina
     chromeos-base/flash_player
     chromeos-base/fydeos-input-util
     !kernel-5_10? (
