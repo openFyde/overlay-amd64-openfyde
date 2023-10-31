@@ -27,6 +27,7 @@ RDEPEND="
     )
     chromeos-base/vga-switcher
     virtual/gentoo-extra-pkgs
+    virtual/rtl-mtk-usb-dongles
 "
 
 #    chromeos-base/intel-microcode
