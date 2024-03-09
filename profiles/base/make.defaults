@@ -1,0 +1,3 @@
+USE=""
+USE="${USE} -tpm_dynamic -tpm -tpm_insecure_fallback tpm2_simulator tpm2_simulator_manufacturer"
+USE="${USE} vtpm_proxy drm_atomic"

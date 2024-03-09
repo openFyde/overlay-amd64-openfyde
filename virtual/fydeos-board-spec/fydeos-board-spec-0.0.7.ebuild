@@ -12,7 +12,6 @@ KEYWORDS="*"
 
 RDEPEND="
     virtual/openfyde-board-spec
-    chromeos-base/device-appid
 "
 
 DEPEND="${RDEPEND}"
