@@ -7,3 +7,4 @@ net-wireless/wpa_supplicant-cros -wnm
 >=sys-apps/gptfdisk-1.0.1 -ncurses
 sys-libs/ncurses unicode
 sys-kernel/linux-firmware savedconfig
+chromeos-base/cryptohome upper_case_product_uuid
