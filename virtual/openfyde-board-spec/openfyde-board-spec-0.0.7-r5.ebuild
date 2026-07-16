@@ -21,7 +21,6 @@ RDEPEND="
     chromeos-base/fydeos-gestures-config
     media-libs/lpe-support-topology
     chromeos-base/intel-lpe-audio-config
-    chromeos-base/flash_player
     chromeos-base/fydeos-input-util
     kernel-5_4? (
       net-wireless/rtl8821ce-driver
@@ -30,7 +29,6 @@ RDEPEND="
     virtual/gentoo-extra-pkgs
     virtual/rtl-mtk-usb-dongles
     chromeos-base/fydeos-power-daemon-go
-    net-wireless/rtw8852-firmware
     chromeos-base/reven-hwdb
     chromeos-base/reven-quirks
     sys-firmware/sof-firmware
